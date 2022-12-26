@@ -1,0 +1,10 @@
+export const VARIABLE = {
+  CONFIRM_OTP_SCREEN_TYPE: {
+    NEW: 'NEW',
+    UN_NEW: 'UN_NEW',
+  },
+  CREATE_PASSWORD_SCREEN_TYPE: {
+    CREATE: 'CREATE',
+    UN_CREATE: 'UN_CREATE',
+  },
+};

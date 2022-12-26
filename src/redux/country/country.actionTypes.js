@@ -1,0 +1,5 @@
+import {ACTION_TYPES} from '../actionTypes';
+
+export const COUNTRY_ACTION_TYPES = {
+  GET_ALL_COUNTRY: ACTION_TYPES('COUNTRY/GET_ALL_COUNTRY'),
+};
