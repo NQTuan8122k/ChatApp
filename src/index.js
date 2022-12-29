@@ -6,7 +6,10 @@ import {PersistGate} from 'redux-persist/lib/integration/react';
 import Loading from './components/Loading';
 import AppContainer from './navigator';
 import {persistor, store} from './redux/configureStore';
+import ChatContainer from './screens/chat/chat.container';
+import ChatroomContainer from './screens/chatroom/chatroom.container';
 import DetailContainer from './screens/detail/detail.container';
+import HomeContainer from './screens/home/home.container';
 import HomeView from './screens/home/home.view';
 import LoginContainer from './screens/login/login.container';
 import NewFeedContainer from './screens/newFeed/newFeed.container';
@@ -31,7 +34,7 @@ const App = () => {
       <SafeAreaProvider>
         {/* <DetailContainer /> */}
         {/* <AppContainer /> */}
-        <LoginContainer />
+        <ChatroomContainer />
       </SafeAreaProvider>
       {/* </PersistGate> */}
     </Provider>

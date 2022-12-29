@@ -16,4 +16,5 @@ export const FONT_SIZE = {
   X_LARGE: scaleHeight(20),
   XX_LARGE: scaleHeight(24),
   XXX_LARGE: scaleHeight(40),
+  MEDIUM_LARGE: scaleHeight(30),
 };

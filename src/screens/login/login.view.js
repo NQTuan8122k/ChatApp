@@ -10,12 +10,6 @@ import {IMAGES} from '../../constants/images';
 const LoginView = ({data = []}) => {
   return (
     <SafeAreaView style={{flex: 1}}>
-      {/* <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 0}}
-        style={{flex: 1, paddingLeft: 15, paddingRight: 15, borderRadius: 5}}
-      /> */}
       <ImageBackground
         source={IMAGES.LOGIN_BACKGROUND}
         resizeMode="cover"
@@ -27,5 +21,7 @@ const LoginView = ({data = []}) => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({});
 
 export default LoginView;

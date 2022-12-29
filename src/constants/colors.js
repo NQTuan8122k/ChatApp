@@ -1,5 +1,5 @@
 const COLORS = {
-  blue: '#007bff',
+  blue: '#0584FE',
   blue_light: '#1da1f2',
   indigo: '#6610f2',
   purple: '#6f42c1',
@@ -13,7 +13,7 @@ const COLORS = {
   white: '#fff',
   gray: '#6c757d',
   gray_dark: '#343a40',
-  gray_light: '#E6E6E6',
+  gray_light: '#8E8E93',
   secondary: '#6c757d',
   success: '#28a745',
   info: '#17a2b8',
@@ -55,6 +55,7 @@ const COLORS = {
   profileColor: '#E6EEFA',
   buttonColor: '#5790DF',
   secondary_bachground: '#F5F5F5',
+  blue1: '#007bff',
 };
 
 export {COLORS};
