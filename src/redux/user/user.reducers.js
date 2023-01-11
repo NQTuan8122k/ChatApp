@@ -2,12 +2,13 @@ import {USER_ACTION_TYPES} from './user.actionTypes';
 
 const initialState = {
   user: null,
+  userList: null,
 };
 
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case USER_ACTION_TYPES.GET_CURRENT_USER.SUCCESS: {
-      console.log('********ACTION_USER**********', action);
+      console.log('********ACTION_USER**********');
       return {
         ...state,
         user: action.payload,
@@ -18,13 +19,15 @@ const userReducer = (state = initialState, action) => {
         ...state,
       };
     }
-    case USER_ACTION_TYPES.CHANGE_PASSWORD.SUCCESS: {
-      console.log('********ACTION_CHANGE_PASSWORD_USER**********', action);
+
+    case USER_ACTION_TYPES.GET_ALL_USER.SUCCESS: {
+      console.log('********ACTION_ALL_USER**********');
       return {
         ...state,
+        userList: action.payload,
       };
     }
-    case USER_ACTION_TYPES.CHANGE_PASSWORD.FAIL: {
+    case USER_ACTION_TYPES.GET_ALL_USER.FAIL: {
       return {
         ...state,
       };

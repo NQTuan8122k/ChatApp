@@ -4,6 +4,10 @@ import {persistReducer} from 'redux-persist';
 import loadingReducer from './loading/loading.reducer';
 // import nightModeReducer from './nightMode/nightMode.reducer';
 import countryReducer from './country/country.reducers';
+import signupReducer from './signup/signup.reducers';
+import userReducer from './user/user.reducers';
+import authReducer from './auth/auth.reducers';
+import chatReducer from './chat/chat.reducers';
 
 const nightModePersistConfig = {
   key: 'nightMode',
@@ -20,7 +24,11 @@ const rootReducer = combineReducers({
   // nightModeReducer: persistReducer(nightModePersistConfig, nightModeReducer),
   // userReducer: persistReducer(userPersistConfig, userReducer),
   // loyaltyReducer,
+  userReducer,
   countryReducer,
+  signupReducer,
+  authReducer,
+  chatReducer,
 });
 
 export default rootReducer;

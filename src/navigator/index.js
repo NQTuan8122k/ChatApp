@@ -1,10 +1,10 @@
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Platform, useColorScheme} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {SCREEN_NAME} from '../constants/screenName';
 import NavigationServices from '../utils/navigationServices';
 
@@ -18,19 +18,16 @@ GoogleSignin.configure({
 });
 
 import {COLORS} from '../constants/colors';
-import {LINKING_URL} from '../constants/linkingURL';
-import {getUserSelector} from '../redux/user/user.selectors';
-import requestPermission from '../utils/permission';
-import {
-  notifeeListener,
-  NotificationListener,
-  requestUserPermission,
-} from '../utils/pushNotification';
 // import MainBottomTab from './mainBottomTab';
 
-import PlaceContainer from '../screens/place/place.container';
-import HomeView from '../screens/home/home.view';
+import ConfirmOTPContainer from '../screens/confirmOTP/confirmOPT.container';
+import GetOtpContainer from '../screens/getOtp/getOtp.container';
+import LoginContainer from '../screens/login/login.container';
+import SignupContainer from '../screens/signup/signup.container';
 import MainBottomTab from './mainBottomTab';
+import HomeContainer from '../screens/home/home.container';
+import RegisterContainer from '../screens/register/register.container';
+import ChatroomContainer from '../screens/chatroom/chatroom.container';
 const Stack = createNativeStackNavigator();
 
 const MainStack = () => {
@@ -47,10 +44,60 @@ const MainStack = () => {
   // }, []);
   return (
     <Stack.Navigator
+      initialRouteName={SCREEN_NAME.LOGIN_SCREEN}
       screenOptions={{headerShown: false, animationEnabled: false}}>
+      <Stack.Screen
+        name={SCREEN_NAME.GET_OTP_SCRREN}
+        component={GetOtpContainer}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={SCREEN_NAME.OTP_SCREEN}
+        component={ConfirmOTPContainer}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={SCREEN_NAME.SIGNUP_SCREEN}
+        component={SignupContainer}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={SCREEN_NAME.LOGIN_SCREEN}
+        component={LoginContainer}
+        options={{
+          headerShown: false,
+        }}
+      />
       <Stack.Screen
         name={SCREEN_NAME.BOTTOM_TAB_MAIN_SCREEN}
         component={MainBottomTab}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={SCREEN_NAME.REGISTER_SCREEN}
+        component={RegisterContainer}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={SCREEN_NAME.HOME_SCREEN}
+        component={HomeContainer}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={SCREEN_NAME.CHAT_ROOM_SCREEN}
+        component={ChatroomContainer}
         options={{
           headerShown: false,
         }}

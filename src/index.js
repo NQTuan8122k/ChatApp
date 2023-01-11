@@ -2,19 +2,8 @@ import React from 'react';
 import {LogBox, StatusBar} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Provider} from 'react-redux';
-import {PersistGate} from 'redux-persist/lib/integration/react';
-import Loading from './components/Loading';
 import AppContainer from './navigator';
-import {persistor, store} from './redux/configureStore';
-import ChatContainer from './screens/chat/chat.container';
-import ChatroomContainer from './screens/chatroom/chatroom.container';
-import DetailContainer from './screens/detail/detail.container';
-import HomeContainer from './screens/home/home.container';
-import HomeView from './screens/home/home.view';
-import LoginContainer from './screens/login/login.container';
-import NewFeedContainer from './screens/newFeed/newFeed.container';
-import PlaceContainer from './screens/place/place.container';
-import ProfileContainer from './screens/profile/profile.container';
+import {store} from './redux/configureStore';
 
 const App = () => {
   // useEffect(() => {
@@ -27,14 +16,14 @@ const App = () => {
     <Provider store={store}>
       <StatusBar
         barStyle="dark-content"
-        // translucent
+        translucent
         backgroundColor="transparent"
       />
       {/* <PersistGate loading={<Loading />} persistor={persistor}> */}
       <SafeAreaProvider>
         {/* <DetailContainer /> */}
-        {/* <AppContainer /> */}
-        <ChatroomContainer />
+        <AppContainer />
+        {/* <SignupContainer /> */}
       </SafeAreaProvider>
       {/* </PersistGate> */}
     </Provider>

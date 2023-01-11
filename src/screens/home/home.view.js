@@ -16,26 +16,40 @@ import {ICONS} from '../../constants/icons';
 import {FlatList} from 'react-native-gesture-handler';
 import moment from 'moment/moment';
 import formatTimeMessage from '../../helpers/formatTimeMessage';
+import {IMAGES} from '../../constants/images';
+import NavigationServices from '../../utils/navigationServices';
+import {SCREEN_NAME} from '../../constants/screenName';
 
 const HomeView = ({
   userInfo = null,
   searchKey = 'Search',
   onlineUser = [],
   chatList = [],
+  userId,
+  newChatroom = () => {},
 }) => {
-  // console.log('=======================', moment());
-  const renderUser = useCallback(item => {
+  const renderUser = item => {
+    let roomId =
+      userInfo?.uid > item?.uid
+        ? userInfo?.uid + item?.uid
+        : item?.uid + userInfo?.uid;
+
     return (
-      <View
+      <TouchableOpacity
+        onPress={() => newChatroom(item?.uid, roomId, item)}
         style={{
           alignItems: 'center',
           marginRight: scale(22),
           justifyContent: 'center',
         }}>
-        {item?.avatarUrl ? (
+        {item?.uid ? (
           <View>
             <Image
-              source={{uri: item?.avatarUrl}}
+              source={
+                !!item?.avatarUrl
+                  ? {uri: item?.avatarUrl}
+                  : IMAGES.MALE_NO_AVATAR_1
+              }
               style={{
                 height: scaleHeight(52),
                 width: scaleHeight(52),
@@ -86,9 +100,9 @@ const HomeView = ({
         <Text style={{marginTop: scaleHeight(7)}}>
           {item?.username || 'Your story'}
         </Text>
-      </View>
+      </TouchableOpacity>
     );
-  }, []);
+  };
 
   const renderMessageItem = useCallback(
     item => {
@@ -124,7 +138,7 @@ const HomeView = ({
                   color: COLORS.black,
                   fontSize: scaleHeight(17),
                   fontWeight:
-                    item?.lastMessage?.sender === userInfo?.id ? '500' : '400',
+                    item?.lastMessage?.sender === userInfo?.uid ? '500' : '400',
                 }}>
                 {item?.username}
               </Text>
@@ -133,7 +147,7 @@ const HomeView = ({
                   flexDirection: 'row',
                   height: scaleHeight(20),
                   width:
-                    item?.lastMessage?.sender === userInfo?.id
+                    item?.lastMessage?.sender === userInfo?.uid
                       ? scale(271 - scale(10))
                       : scale(271),
                 }}>
@@ -143,11 +157,11 @@ const HomeView = ({
                     color: COLORS.blue,
                     // maxWidth: scale(271),
                     maxWidth:
-                      item?.lastMessage?.sender === userInfo?.id
+                      item?.lastMessage?.sender === userInfo?.uid
                         ? scale(271 - messageTime.len - scale(10))
                         : scale(271 - messageTime.len),
                   }}>
-                  {item?.lastMessage?.sender === userInfo?.id
+                  {item?.lastMessage?.sender === userInfo?.uid
                     ? 'You'
                     : item?.nickname || item?.username}
                   : {item?.lastMessage?.message}
@@ -163,7 +177,7 @@ const HomeView = ({
               </View>
             </View>
 
-            {item?.lastMessage?.sender === userInfo?.id ? (
+            {item?.lastMessage?.sender === userInfo?.uid ? (
               !item?.lastMessage?.isRead ? (
                 <Image
                   source={
@@ -195,7 +209,7 @@ const HomeView = ({
         </View>
       );
     },
-    [userInfo?.id],
+    [userInfo],
   );
   return (
     <SafeAreaView
@@ -217,7 +231,11 @@ const HomeView = ({
             justifyContent: 'center',
           }}>
           <Image
-            source={{uri: userInfo?.avatarUrl}}
+            source={
+              !!userInfo?.avatarUrl
+                ? {uri: userInfo?.avatarUrl}
+                : IMAGES.MALE_NO_AVATAR_1
+            }
             style={{
               height: scaleHeight(40),
               width: scaleHeight(40),

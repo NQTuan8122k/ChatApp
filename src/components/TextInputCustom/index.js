@@ -15,63 +15,70 @@ import {ICONS} from '../../constants/icons';
 import {COLORS} from '../../constants/colors';
 import {FONT_SIZE} from '../../constants/fonts';
 
-const TextInputCustom = React.forwardRef(
-  (
-    {value, placeHolder, onChangeText, onBlur = () => {}, onFocus = () => {}},
-    refInput,
-  ) => {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: 'rgba(0, 0, 0, 0.05)',
-          // minHeight: scaleHeight(36),
-          borderRadius: scaleHeight(18),
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexDirection: 'row',
-          paddingLeft: scale(15),
-          maxHeight: scaleHeight(135),
-        }}>
+const TextInputCustom = ({
+  wrapperStyle,
+  value,
+  wrapperInputStyle,
+  placeHolder,
+  onChangeText,
+  onBlur = () => {},
+  onFocus = () => {},
+  errorMessage,
+  numberOfLines,
+  maxLength,
+  editable,
+  placeHolderTextColor,
+  isSecure,
+  keyboardType,
+  onPressIconLeft = () => {},
+  iconLeft,
+  iconRight,
+  onPressIconRight,
+  rightIconWrapperStyle,
+  isTouched,
+  setTouched,
+}) => {
+  return (
+    <>
+      <View style={[wrapperStyle, styles().container]}>
+        {!!iconLeft && (
+          <TouchableOpacity
+            onPress={() => !!onPressIconLeft && onPressIconLeft()}>
+            {iconLeft}
+          </TouchableOpacity>
+        )}
         <TextInput
-          defaultValue={'Aa'}
-          value={value}
-          ref={refInput}
-          // numberOfLines={1}
-          keyboardType={'ascii-capable'}
-          multiline
-          onChangeText={onChangeText}
           placeholder={placeHolder}
-          placeholderTextColor={{
-            color: '#999999',
-            fontSize: FONT_SIZE.MEDIUM,
-            fontWeight: '400',
-          }}
-          style={{
-            color: COLORS.black,
-            fontSize: FONT_SIZE.MEDIUM,
-            fontWeight: '400',
-            flex: 1,
-            maxWidth: scale(285),
-          }}
+          style={[styles().textInputStyles, wrapperInputStyle]}
+          value={value}
+          onChangeText={onChangeText}
           onBlur={onBlur}
-          onFocus={onFocus}
+          numberOfLines={numberOfLines}
+          editable={editable}
+          maxLength={maxLength}
+          placeholderTextColor={placeHolderTextColor}
+          secureTextEntry={!!isSecure}
+          keyboardType={keyboardType}
         />
-        <Image
-          source={ICONS.EMOIJ}
-          style={{
-            width: scaleHeight(22),
-            height: scaleHeight(24),
-            tintColor: COLORS.blue,
-            position: 'absolute',
-            bottom: scaleHeight(10),
-            right: scale(5),
-          }}
-          resizeMode={'contain'}
-        />
+        {!!iconRight && (
+          <TouchableOpacity
+            style={[styles().rightIcon, rightIconWrapperStyle]}
+            onPress={() => !!onPressIconRight && onPressIconRight()}>
+            {iconRight}
+          </TouchableOpacity>
+        )}
       </View>
-    );
-  },
-);
+      {!!setTouched ? (
+        <Text style={styles().errorMessage}>
+          {isTouched && !!errorMessage ? errorMessage : null}
+        </Text>
+      ) : (
+        <Text style={styles().errorMessage}>
+          {!!errorMessage ? errorMessage : null}
+        </Text>
+      )}
+    </>
+  );
+};
 
 export default React.memo(TextInputCustom);

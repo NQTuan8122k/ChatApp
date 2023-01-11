@@ -33,4 +33,6 @@ export const ICONS = {
   VIDEO: require('../assets/icons/video.png'),
   PHOTO: require('../assets/icons/photo.png'),
   SEND: require('../assets/icons/send.png'),
+  MESSENGER_LOGO: require('../assets/icons/messsengerLogo.png'),
+  MESS_LOGO: require('../assets/icons/mess_logo.png'),
 };

@@ -1,234 +1,184 @@
-import React, {useCallback} from 'react';
+import moment from 'moment';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {REALTIME_DATABASE_TABLE} from '../../constants/other';
+import useIsMounted from '../../hooks/useIsMounted';
+import {postNewMessageHandle} from '../../redux/chat/chat.actions';
+import {getAllMessageSelector} from '../../redux/chat/chat.selectors';
+import {getUserSelector} from '../../redux/user/user.selectors';
+import database from '../../utils/firebaseUtils';
 import ChatroomView from './chatroom.view';
-const roomChat = {
-  // id: '-NC4Qr6g91N1SABVysuz',
-  data: [
-    {
-      id: '-NC4Qr6g91N1SABVysuz',
-      createdAt: '2022-12-27T05:23:01.854Z',
-      emoji: [],
+
+const ChatroomContainer = props => {
+  const userInfo = useSelector(getUserSelector);
+  const [message, setMessage] = React.useState('');
+  const [allMessage, setAllMessage] = React.useState({data: []});
+
+  const roomId = useRef(props?.route?.params?.roomId);
+
+  const partnerId = props?.route?.params?.partnerId;
+  const partnerData = props?.route?.params?.partnerData;
+
+  const dispath = useDispatch();
+
+  const [listMessages, setListMessages] = useState({
+    page: 1,
+    data: [],
+  });
+
+  const listMessageRef = useRef([]);
+  const isMounted = useIsMounted();
+  const [isFetching, setIsFetching] = useState(true);
+
+  // let message = {
+  //   id: moment.now().toString(),
+  //   createdAt: '2022-12-27T05:38:01.854Z',
+  //   emoji: null,
+  //   reply: null,
+  //   isDeletedAll: false,
+  //   isDeletedOnly: false,
+  //   isSeen: false,
+  //   isUnread: false,
+  //   lastedAction: 1663317877903,
+  //   message: 'Oh na na, just be careful, na na',
+  //   owner: userInfo?.uid,
+  //   type: 0, // 0: message, 1: audio, 2 video, 3 image, 4 file
+  // };
+
+  const sendMessage = userId => {
+    console.log('=========--------------------------', userId);
+    let newMessage = {
+      id: moment.now().toString(),
+      createdAt: new Date().toString(),
+      emoji: null,
+      reply: null,
       isDeletedAll: false,
       isDeletedOnly: false,
-      isSeen: ['0'],
+      isSeen: false,
       isUnread: false,
       lastedAction: 1663317877903,
-      message: 'Iaasaf2 1421dasffb',
-      owner: '1',
-    },
-    {
-      id: '-NC4T9Ss1nXdzzRj1npR',
-      createdAt: '2022-12-27T05:23:01.854Z',
-      emoji: [],
-      isDeletedAll: false,
-      isDeletedOnly: false,
-      isSeen: ['0'],
-      isUnread: false,
-      lastedAction: 1663317877903,
-      message: 'I just wanna dive in the water, with you',
-      owner: '1',
-    },
-    {
-      id: '-NC4TBW1DXT8mNCyT4-p',
-      createdAt: '2022-12-27T05:24:01.854Z',
-      emoji: [],
-      isDeletedAll: false,
-      isDeletedOnly: false,
-      isSeen: ['1'],
-      isUnread: false,
-      lastedAction: 1663317877903,
-      message: "Baby, we can't see the bottom",
-      owner: '0',
-    },
-    {
-      id: '-NC4TMhq-xr6uqGlCTk2',
-      createdAt: '2022-12-27T05:26:01.854Z',
-      emoji: [],
-      isDeletedAll: false,
-      isDeletedOnly: false,
-      isSeen: ['1'],
-      isUnread: false,
-      lastedAction: 1663317877903,
-      message: "It's so easy to fall for each other",
-      owner: '0',
-    },
-    {
-      id: '-NC4TNznuyzMFlvaOwsF',
-      createdAt: '2022-12-27T05:29:01.854Z',
-      emoji: [],
-      isDeletedAll: false,
-      isDeletedOnly: false,
-      isSeen: ['1'],
-      isUnread: false,
-      lastedAction: 1663317877903,
-      message: "I'm just hoping we catch one another (another)",
-      owner: '0',
-    },
-    {
-      id: '-NC4Tg-4oI-WUWkDiEh8',
-      createdAt: '2022-12-27T05:31:01.854Z',
-      emoji: [],
-      isDeletedAll: false,
-      isDeletedOnly: false,
-      isSeen: ['1'],
-      isUnread: false,
-      lastedAction: 1663317877903,
-      message: 'Oh na na, just be careful, na na',
-      owner: '0',
-    },
-    {
-      id: '-NC4Tt7Psg-rP55Dojyg',
-      createdAt: '2022-12-27T05:33:01.854Z',
-      emoji: [],
-      isDeletedAll: false,
-      isDeletedOnly: false,
-      isSeen: ['0'],
-      isUnread: false,
-      lastedAction: 1663317877903,
-      message: "Love ain't simple, na na",
-      owner: '1',
-    },
-    {
-      id: '-NC4TwIMiE5SWrKasKs5',
-      createdAt: '2022-12-27T05:36:01.854Z',
-      emoji: [],
-      isDeletedAll: false,
-      isDeletedOnly: false,
-      isSeen: ['0'],
-      isUnread: false,
-      lastedAction: 1663317877903,
-      message: 'Promise me no promises',
-      owner: '1',
-    },
-    {
-      id: '-NC4U69IHn32zlcfAY4H',
-      createdAt: '2022-12-27T05:38:01.854Z',
-      emoji: [],
-      isDeletedAll: false,
-      isDeletedOnly: false,
-      isSeen: [],
-      isUnread: false,
-      lastedAction: 1663317877903,
-      message: 'Oh na na, just be careful, na na',
-      owner: '1',
-    },
-  ],
-};
-const data = [
-  {
-    id: '-NC4Qr6g91N1SABVysuz',
-    createdAt: '2022-12-27T05:23:01.854Z',
-    emoji: [],
-    isDeletedAll: false,
-    isDeletedOnly: false,
-    isSeen: ['0'],
-    isUnread: false,
-    lastedAction: 1663317877903,
-    message: 'Iaasaf2 1421dasffb',
-    owner: '1',
-  },
-  {
-    id: '-NC4T9Ss1nXdzzRj1npR',
-    createdAt: '2022-12-27T05:23:01.854Z',
-    emoji: [],
-    isDeletedAll: false,
-    isDeletedOnly: false,
-    isSeen: ['0'],
-    isUnread: false,
-    lastedAction: 1663317877903,
-    message: 'I just wanna dive in the water, with you',
-    owner: '1',
-  },
-  {
-    id: '-NC4TBW1DXT8mNCyT4-p',
-    createdAt: '2022-12-27T05:24:01.854Z',
-    emoji: [],
-    isDeletedAll: false,
-    isDeletedOnly: false,
-    isSeen: ['1'],
-    isUnread: false,
-    lastedAction: 1663317877903,
-    message: "Baby, we can't see the bottom",
-    owner: '0',
-  },
-  {
-    id: '-NC4TMhq-xr6uqGlCTk2',
-    createdAt: '2022-12-27T05:26:01.854Z',
-    emoji: [],
-    isDeletedAll: false,
-    isDeletedOnly: false,
-    isSeen: ['1'],
-    isUnread: false,
-    lastedAction: 1663317877903,
-    message: "It's so easy to fall for each other",
-    owner: '0',
-  },
-  {
-    id: '-NC4TNznuyzMFlvaOwsF',
-    createdAt: '2022-12-27T05:29:01.854Z',
-    emoji: [],
-    isDeletedAll: false,
-    isDeletedOnly: false,
-    isSeen: ['1'],
-    isUnread: false,
-    lastedAction: 1663317877903,
-    message: "I'm just hoping we catch one another (another)",
-    owner: '0',
-  },
-  {
-    id: '-NC4Tg-4oI-WUWkDiEh8',
-    createdAt: '2022-12-27T05:31:01.854Z',
-    emoji: [],
-    isDeletedAll: false,
-    isDeletedOnly: false,
-    isSeen: ['1'],
-    isUnread: false,
-    lastedAction: 1663317877903,
-    message: 'Oh na na, just be careful, na na',
-    owner: '0',
-  },
-  {
-    id: '-NC4Tt7Psg-rP55Dojyg',
-    createdAt: '2022-12-27T05:33:01.854Z',
-    emoji: [],
-    isDeletedAll: false,
-    isDeletedOnly: false,
-    isSeen: ['0'],
-    isUnread: false,
-    lastedAction: 1663317877903,
-    message: "Love ain't simple, na na",
-    owner: '1',
-  },
-  {
-    id: '-NC4TwIMiE5SWrKasKs5',
-    createdAt: '2022-12-27T05:36:01.854Z',
-    emoji: [],
-    isDeletedAll: false,
-    isDeletedOnly: false,
-    isSeen: ['0'],
-    isUnread: false,
-    lastedAction: 1663317877903,
-    message: 'Promise me no promises',
-    owner: '1',
-  },
-  {
-    id: '-NC4U69IHn32zlcfAY4H',
-    createdAt: '2022-12-27T05:38:01.854Z',
-    emoji: [],
-    isDeletedAll: false,
-    isDeletedOnly: false,
-    isSeen: [],
-    isUnread: false,
-    lastedAction: 1663317877903,
-    message: 'Oh na na, just be careful, na na',
-    owner: '1',
-  },
-];
-const ChatroomContainer = () => {
+      message,
+      owner: userId,
+      type: 0, // 0: message, 1: audio, 2 video, 3 image, 4 file
+    };
+    const roomChat = {
+      roomId: roomId?.current,
+      message: {
+        id: moment.now().toString(),
+        createdAt: new Date().toString(),
+        emoji: null,
+        reply: null,
+        isDeletedAll: false,
+        isDeletedOnly: false,
+        isSeen: false,
+        isUnread: false,
+        lastedAction: 1663317877903,
+        message,
+        owner: userId,
+        type: 0, // 0: message, 1: audio, 2 video, 3 image, 4 file
+      },
+    };
+
+    setListMessages(prevState => ({
+      ...prevState,
+      data: [newMessage, ...prevState?.data],
+    }));
+    dispath(
+      postNewMessageHandle(
+        roomChat,
+        () => setMessage(''),
+        () => {},
+      ),
+    );
+  };
+
+  const RoomData = useSelector(getAllMessageSelector);
+  const compareArrays = (a, b) =>
+    a?.length === b?.length && !!a?.length
+      ? a?.every((element, index) => element === b?.[index])
+      : false;
+
+  useEffect(() => {
+    let data = listMessages?.data
+      ? listMessages?.data?.sort?.((a, b) => {
+          const timeA = a?.createdAt; // ignore upper and lowercase
+          const timeB = b?.createdAt; // ignore upper and lowercase
+          if (timeA < timeB) {
+            return -1;
+          }
+          if (timeA > timeB) {
+            return 1;
+          }
+          // names must be equal
+          return 0;
+        })
+      : [];
+    if (data?.length) {
+      setAllMessage(prev => {
+        if (!compareArrays(prev?.data, data)) {
+          return {data};
+        }
+      });
+    }
+  }, [RoomData, listMessages?.data]);
+
+  useEffect(() => {
+    if (roomId.current == undefined) {
+      setIsFetching(false);
+    }
+    return () => {
+      if (roomId.current) {
+        database
+          .ref(REALTIME_DATABASE_TABLE.TBL_CHATROOM)
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+          .child(roomId?.current)
+          .child('data')
+          .off();
+      }
+    };
+  }, []);
+
+  const addMessageListener = page => {
+    listMessageRef.current = [];
+    setIsFetching(true);
+    database
+      .ref(REALTIME_DATABASE_TABLE.TBL_CHATROOM)
+      .child(roomId.current)
+      .child('data')
+      .on('value', snapshot => {
+        if (snapshot.val()) {
+          setListMessages(() => {
+            return {
+              page: 1,
+              data: Object?.keys(snapshot.val())?.map(function (key) {
+                return snapshot?.val()[key];
+              }),
+            };
+          });
+        }
+      });
+  };
+  useEffect(() => {
+    if (roomId?.current) {
+      addMessageListener(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomId?.current]);
+
+  console.log('=====0', roomId?.current);
+  console.log('=====0*********', listMessages?.data);
+
   return (
     <ChatroomView
-      data={data}
-      // sendNewMessage={sendNewMessage}
-      // sendMessage={sendMessage}
+      RoomData={allMessage?.data}
+      roomId={roomId?.current}
+      partnerId={partnerId}
+      userInfo={userInfo}
+      userId={userInfo?.uid}
+      partnerData={partnerData}
+      sendMessage={sendMessage}
+      message={message}
+      setMessage={setMessage}
     />
   );
 };

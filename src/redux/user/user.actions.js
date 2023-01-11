@@ -1,7 +1,8 @@
 import {USER_ACTION_TYPES} from './user.actionTypes';
 
-export const getCurrentUserHandle = () => ({
+export const getCurrentUserHandle = payload => ({
   type: USER_ACTION_TYPES.GET_CURRENT_USER.HANDLE,
+  payload,
 });
 
 export const getCurrentUserSuccess = payload => ({
@@ -13,37 +14,16 @@ export const getCurrentUserFail = err => ({
   type: USER_ACTION_TYPES.GET_CURRENT_USER.FAIL,
   err,
 });
-
-export const changePasswordHandle = (payload, onSuccess, onFailed) => ({
-  type: USER_ACTION_TYPES.CHANGE_PASSWORD.HANDLE,
-  payload,
-  onSuccess,
-  onFailed,
+export const getAllUserHandle = () => ({
+  type: USER_ACTION_TYPES.GET_ALL_USER.HANDLE,
 });
 
-export const changePasswordSuccess = payload => ({
-  type: USER_ACTION_TYPES.CHANGE_PASSWORD.SUCCESS,
+export const getAllUserSuccess = payload => ({
+  type: USER_ACTION_TYPES.GET_ALL_USER.SUCCESS,
   payload,
 });
 
-export const changePasswordFail = err => ({
-  type: USER_ACTION_TYPES.CHANGE_PASSWORD.FAIL,
-  err,
-});
-
-export const updateUserHandle = (payload, onSuccess, onFail) => ({
-  type: USER_ACTION_TYPES.UPDATE_USER.HANDLE,
-  payload,
-  onSuccess,
-  onFail,
-});
-
-export const updateUserSuccess = payload => ({
-  type: USER_ACTION_TYPES.UPDATE_USER.SUCCESS,
-  payload,
-});
-
-export const updateUserFail = err => ({
-  type: USER_ACTION_TYPES.UPDATE_USER.FAIL,
+export const getAllUserFail = err => ({
+  type: USER_ACTION_TYPES.GET_ALL_USER.FAIL,
   err,
 });

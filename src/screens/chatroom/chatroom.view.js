@@ -1,35 +1,44 @@
+import React, {useRef} from 'react';
 import {
   FlatList,
   Image,
   SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
 import {COLORS} from '../../constants/colors';
-import {scale, scaleHeight} from '../../utils/fontConfig';
-import {ICONS} from '../../constants/icons';
 import {FONT_SIZE} from '../../constants/fonts';
-import {Icon, TextInputCustom} from '../../components';
+import {ICONS} from '../../constants/icons';
+import {IMAGES} from '../../constants/images';
+import {scale, scaleHeight} from '../../utils/fontConfig';
+import NavigationServices from '../../utils/navigationServices';
 
-const ChatroomView = (
-  {data = [], userId = '0'},
+const ChatroomView = ({
+  RoomData = [],
+  userInfo,
+  userId = '0',
   partnerId = '1',
-  // sendMessage,
-  // sendNewMessage,
-) => {
-  const inputRef = useRef(null);
+  roomId,
+  partnerData,
+  message = '',
+  setMessage = () => {},
+  sendMessage = () => {},
+  sendNewMessage = () => {},
+}) => {
   const scrollViewRef = useRef(null);
-  const [message, setMessage] = React.useState('');
   const [focus, setFocus] = React.useState(false);
+
   const changeFocus = () => {
     setFocus(prev => !prev);
+    scrollViewRef.current.scrollToEnd({animated: true});
   };
-  const checkLastMessage = (arr, index, id) => {
+
+  const checkLastMessage = (arr = [], index, id) => {
     let len = arr?.length - 1;
     if (index === 0) {
       if (arr[index]?.owner == id && arr[index + 1]?.owner == id) {
@@ -50,7 +59,8 @@ const ChatroomView = (
 
     return true;
   };
-  const isOnlyAbove = (arr, index, id) => {
+
+  const isOnlyAbove = (arr = [], index, id) => {
     let len = arr?.length - 1;
     if (index < len && index > 0) {
       if (
@@ -65,7 +75,7 @@ const ChatroomView = (
             borderBottomLeftRadius: scaleHeight(18),
             borderBottomRightRadius: scaleHeight(18),
           },
-          partnerId: {
+          partner: {
             borderTopLeftRadius: scaleHeight(4),
             borderTopRightRadius: scaleHeight(18),
             borderBottomLeftRadius: scaleHeight(18),
@@ -81,7 +91,7 @@ const ChatroomView = (
             borderBottomLeftRadius: scaleHeight(18),
             borderBottomRightRadius: scaleHeight(18),
           },
-          partnerId: {
+          partner: {
             borderTopLeftRadius: scaleHeight(4),
             borderTopRightRadius: scaleHeight(18),
             borderBottomLeftRadius: scaleHeight(18),
@@ -91,7 +101,8 @@ const ChatroomView = (
     }
     return {};
   };
-  const isOnlyBottom = (arr, index, id) => {
+
+  const isOnlyBottom = (arr = [], index, id) => {
     let len = arr?.length - 1;
     if (index < len && index > 0) {
       if (
@@ -106,7 +117,7 @@ const ChatroomView = (
             borderBottomLeftRadius: scaleHeight(18),
             borderBottomRightRadius: scaleHeight(4),
           },
-          partnerId: {
+          partner: {
             borderTopLeftRadius: scaleHeight(18),
             borderTopRightRadius: scaleHeight(18),
             borderBottomLeftRadius: scaleHeight(4),
@@ -122,7 +133,7 @@ const ChatroomView = (
             borderBottomLeftRadius: scaleHeight(18),
             borderBottomRightRadius: scaleHeight(4),
           },
-          partnerId: {
+          partner: {
             borderTopLeftRadius: scaleHeight(18),
             borderTopRightRadius: scaleHeight(18),
             borderBottomLeftRadius: scaleHeight(4),
@@ -132,7 +143,8 @@ const ChatroomView = (
     }
     return {};
   };
-  const haveNextMessage = (arr, index, id) => {
+
+  const haveNextMessage = (arr = [], index, id) => {
     let len = arr?.length - 1;
     if (index < len && index > 0) {
       if (
@@ -147,7 +159,7 @@ const ChatroomView = (
             borderBottomLeftRadius: scaleHeight(18),
             borderBottomRightRadius: scaleHeight(4),
           },
-          partnerId: {
+          partner: {
             borderTopLeftRadius: scaleHeight(4),
             borderTopRightRadius: scaleHeight(18),
             borderBottomLeftRadius: scaleHeight(4),
@@ -157,49 +169,12 @@ const ChatroomView = (
     }
     return {};
   };
-  const sendNewMessage = message => {
-    console.log('==========================================');
-    const newMessage = {
-      id: new Date().toString(),
-      createdAt: '2022-12-27T05:38:01.854Z',
-      emoji: [],
-      isDeletedAll: false,
-      isDeletedOnly: false,
-      isSeen: [],
-      isUnread: false,
-      lastedAction: 1663317877903,
-      message,
-      owner: '1',
-    };
-    data.push(newMessage);
-    setMessage('');
-  };
-
-  const sendMessage = message => {
-    console.log('=========--------------------------');
-
-    const newMessage = {
-      id: new Date().toString(),
-      createdAt: '2022-12-27T05:38:01.854Z',
-      emoji: [],
-      isDeletedAll: false,
-      isDeletedOnly: false,
-      isSeen: [],
-      isUnread: false,
-      lastedAction: 1663317877903,
-      message,
-      owner: '0',
-    };
-
-    data.push(newMessage);
-    setMessage('');
-  };
 
   const rendeMessageItem = (item, index) => {
-    let isLassmessage = checkLastMessage(data, index, item?.owner);
-    let border = haveNextMessage(data, index, item?.owner);
-    let bottomMess = isOnlyBottom(data, index, item?.owner);
-    let topMess = isOnlyAbove(data, index, item?.owner);
+    let isLassmessage = checkLastMessage(RoomData, index, item?.owner);
+    let border = haveNextMessage(RoomData, index, item?.owner);
+    let bottomMess = isOnlyBottom(RoomData, index, item?.owner);
+    let topMess = isOnlyAbove(RoomData, index, item?.owner);
 
     return (
       <View
@@ -209,12 +184,12 @@ const ChatroomView = (
             flexDirection: 'row',
             backgroundColor: COLORS.white,
           },
-          userId == item?.owner
-            ? {alignSelf: 'flex-end', justifyContent: 'center'}
-            : {alignSelf: 'flex-start', justifyContent: 'center'},
+          partnerId == item?.owner
+            ? {alignSelf: 'flex-start', justifyContent: 'center'}
+            : {alignSelf: 'flex-end', justifyContent: 'center'},
           isLassmessage && {marginBottom: scaleHeight(12)},
         ]}>
-        {userId != item?.owner && !!isLassmessage ? (
+        {partnerId == item?.owner && !!isLassmessage ? (
           <Image
             source={{
               uri: 'https://images.unsplash.com/photo-1624212933981-7fd3e1692147?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8c3VuJTIwc2V0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
@@ -244,31 +219,32 @@ const ChatroomView = (
               borderTopRightRadius: scaleHeight(18),
               borderBottomLeftRadius: scaleHeight(18),
               borderBottomRightRadius: scaleHeight(18),
-              backgroundColor: 'rgba(0, 0, 0, 0.05)',
               paddingHorizontal: scale(12),
               paddingTop: scaleHeight(7.5),
               paddingBottom: scaleHeight(8.5),
               maxWidth: '70%',
-            },
-            userId == item?.owner && {
               backgroundColor: '#0584FE',
               color: COLORS.white,
             },
-            userId == item?.owner
-              ? border?.user || {}
-              : border?.partnerId || {},
-
-            userId == item?.owner
-              ? bottomMess?.user || {}
-              : bottomMess?.partnerId || {},
-            userId == item?.owner
-              ? topMess?.user || {}
-              : topMess?.partnerId || {},
+            partnerId == item?.owner && {
+              backgroundColor: 'rgba(0, 0, 0, 0.05)',
+              color: COLORS.black,
+            },
+            partnerId == item?.owner
+              ? border?.partner || {}
+              : border?.user || {},
+            partnerId == item?.owner
+              ? bottomMess?.partner || {}
+              : bottomMess?.user || {},
+            partnerId == item?.owner
+              ? topMess?.partner || {}
+              : topMess?.user || {},
           ]}>
           {item?.message}
-          {index}
+          {item?.owner}
+          ****{index}
         </Text>
-        {userId == item?.owner && !!item?.isSeen?.includes(partnerId) ? (
+        {userId == item?.owner && !!item?.isSeen?.includes?.(partnerId) ? (
           <Image
             source={ICONS.CHECK}
             style={{
@@ -296,9 +272,15 @@ const ChatroomView = (
       </View>
     );
   };
+
   return (
     <SafeAreaView
-      style={{height: '100%', width: '100%', backgroundColor: COLORS.white}}>
+      style={{
+        height: '100%',
+        width: '100%',
+        backgroundColor: COLORS.white,
+        paddingTop: StatusBar.currentHeight,
+      }}>
       <View
         style={{
           flexDirection: 'row',
@@ -308,29 +290,41 @@ const ChatroomView = (
           paddingHorizontal: scale(16),
           borderBottomWidth: scale(0.5),
           borderBottomColor: COLORS.gray_light,
+          position: 'absolute',
+          left: 0,
+          top: StatusBar.currentHeight,
+          width: '100%',
+          zIndex: 10,
+          backgroundColor: COLORS.white,
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Image
-            source={ICONS.BACK}
-            resizeMode={'contain'}
-            style={{
-              width: scale(13),
-              height: scaleHeight(23),
-              marginRight: scale(20),
-            }}
-          />
-          <Image
-            source={{
-              uri: 'https://media.istockphoto.com/id/1352173787/photo/sunset.jpg?b=1&s=170667a&w=0&k=20&c=jKDMxKXALm540OTFB3vMIDFYwOEedauorSpvLgjkU1M=',
-            }}
-            resizeMode={'contain'}
-            style={{
-              width: scaleHeight(36),
-              height: scaleHeight(36),
-              borderRadius: scaleHeight(36),
-              marginRight: scale(10),
-            }}
-          />
+          <TouchableOpacity onPress={NavigationServices.goBack}>
+            <Image
+              source={ICONS.BACK}
+              resizeMode={'contain'}
+              style={{
+                width: scale(13),
+                height: scaleHeight(23),
+                marginRight: scale(20),
+              }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Image
+              source={
+                !!partnerData?.avatarUrl
+                  ? {uri: partnerData?.avatarUrl}
+                  : IMAGES.MALE_NO_AVATAR_1
+              }
+              resizeMode={'contain'}
+              style={{
+                width: scaleHeight(36),
+                height: scaleHeight(36),
+                borderRadius: scaleHeight(36),
+                marginRight: scale(10),
+              }}
+            />
+          </TouchableOpacity>
           <View>
             <Text
               style={{
@@ -392,7 +386,7 @@ const ChatroomView = (
             height: scaleHeight(255),
             paddingTop: scaleHeight(8),
             position: 'absolute',
-            top: 0,
+            top: scaleHeight(52),
             left: 50,
             zIndex: 10,
             alignItems: 'center',
@@ -473,9 +467,9 @@ const ChatroomView = (
           contentContainerStyle={{
             minHeight: scaleHeight(700),
             marginLeft: scale(12),
-            paddingTop: scaleHeight(548),
+            paddingTop: scaleHeight(590),
           }}
-          data={data}
+          data={RoomData}
           renderItem={({item, index}) => rendeMessageItem(item, index)}
           keyExtractor={(item, index) => item?.id}
           // inverted={true}
@@ -489,7 +483,7 @@ const ChatroomView = (
             alignItems: 'center',
             justifyContent: 'space-between',
             width: '100%',
-            minHeight: scaleHeight(53),
+            minHeight: scaleHeight(40),
             paddingHorizontal: scale(16),
             position: 'absolute',
             bottom: 34,
@@ -547,7 +541,7 @@ const ChatroomView = (
             />
           </View>
         ) : (
-          <TouchableOpacity onPress={() => sendNewMessage(message)}>
+          <TouchableOpacity onPress={() => sendNewMessage(partnerId)}>
             <Image
               source={ICONS.ARROW_RIGHT}
               style={{
@@ -560,15 +554,44 @@ const ChatroomView = (
             />
           </TouchableOpacity>
         )}
-        <TextInputCustom
-          ref={inputRef}
-          value={message}
-          placeHolder={'Aa'}
-          onChangeText={setMessage}
-          onBlur={changeFocus}
-          onFocus={changeFocus}
-        />
-        <TouchableOpacity onPress={() => sendMessage(message)}>
+
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <TextInput
+            value={message}
+            placeholder={'Aa'}
+            placeholderTextColor={COLORS.gray}
+            onChangeText={setMessage}
+            onBlur={changeFocus}
+            onFocus={changeFocus}
+            style={{
+              paddingLeft: scale(15),
+              backgroundColor: '#efeff5',
+              borderRadius: scale(25),
+              color: COLORS.black,
+              fontSize: FONT_SIZE.NORMAL,
+              width: '100%',
+              height: '100%',
+            }}
+          />
+          <Image
+            source={ICONS.EMOIJ}
+            style={{
+              width: scaleHeight(22),
+              height: scaleHeight(24),
+              tintColor: COLORS.blue,
+              position: 'absolute',
+              right: scale(10),
+            }}
+            resizeMode={'contain'}
+          />
+        </View>
+        <TouchableOpacity onPress={() => sendMessage(userId)}>
           <Image
             source={!focus ? ICONS.LIKE : ICONS.SEND}
             style={[

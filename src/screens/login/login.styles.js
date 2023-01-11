@@ -1,5 +1,167 @@
 import {StyleSheet} from 'react-native';
+import {COLORS} from '../../constants/colors';
+import {FONT_SIZE} from '../../constants/fonts';
+import {scale, scaleHeight} from '../../utils/fontConfig';
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'red',
+  },
+  logo: {
+    width: scaleHeight(100),
+    height: scaleHeight(110),
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginTop: '50%',
+    zIndex: 4,
+    marginBottom: scaleHeight(50),
+  },
+  inputContainer: {
+    alignItems: 'center',
+    zIndex: 4,
+    width: '100%',
+    paddingHorizontal: scale(55),
+  },
+  phoneContainer: {
+    width: '100%',
+    height: scaleHeight(45),
+    justifyContent: 'flex-end',
+    paddingBottom: scaleHeight(5),
+  },
+  phonePlaceholder: {
+    width: '100%',
+    color: COLORS.gray,
+    fontSize: FONT_SIZE.MEDIUM,
+  },
+  phoneText: {
+    color: COLORS.black,
+    fontWeight: '600',
+  },
+  underline: {
+    position: 'absolute',
+    backgroundColor: '#AAAAAA',
+    width: '100%',
+    height: scale(2),
+  },
+  inputPhone: {
+    position: 'absolute',
+    top: 0,
+    height: scaleHeight(45),
+    left: scale(55),
+    color: COLORS.black,
+    fontSize: FONT_SIZE.MEDIUM,
+    fontWeight: '600',
+    paddingLeft: scale(10),
+    width: '100%',
+    zIndex: 10,
+    opacity: 0,
+  },
+  inputPassword: {
+    position: 'absolute',
+    bottom: 0,
+    height: scaleHeight(45),
+    left: scale(55),
+    color: COLORS.black,
+    fontSize: FONT_SIZE.MEDIUM,
+    fontWeight: '600',
+    width: '100%',
+    zIndex: 10,
+    opacity: 0,
+  },
+  passwordContainer: {
+    width: '100%',
+    height: scaleHeight(45),
+    justifyContent: 'flex-end',
+    paddingBottom: scaleHeight(5),
+  },
+  passwordPlaceholder: {
+    width: '100%',
+    color: COLORS.gray,
+    fontSize: FONT_SIZE.SMALL,
+    opacity: 0.7,
+  },
+  passwordText: {
+    color: COLORS.black,
+    opacity: 1,
+  },
+  password: {
+    color: COLORS.red,
+    fontSize: FONT_SIZE.SMALL,
+    textAlign: 'right',
+    width: '100%',
+    marginTop: scaleHeight(7),
+  },
+  errorMess: {
+    color: COLORS.red,
+    fontSize: FONT_SIZE.SMALL,
+    textAlign: 'right',
+    width: '100%',
+    marginTop: scaleHeight(7),
+  },
+  bottomContainer: {
+    // position: 'absolute',
+    // bottom: scaleHeight(25),
+    // left: 0,
+    zIndex: 10,
+    alignItems: 'center',
+    paddingHorizontal: '10%',
+    width: '100%',
+    paddingBottom: scaleHeight(25),
+    alignSelf: 'flex-end',
+    justifyContent: 'flex-end',
+    height: scaleHeight(260),
+  },
+  loginBtn: {
+    height: scaleHeight(40),
+    borderRadius: scale(15),
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: scaleHeight(25),
+  },
+  activeBg: {backgroundColor: '#00A3FF'},
+  disableBg: {backgroundColor: COLORS.gray},
+  loginText: {
+    fontSize: FONT_SIZE.NORMAL,
+    color: COLORS.white,
+    fontWeight: '700',
+  },
+  indicatorContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: scale(40),
+    height: scaleHeight(20),
+    marginBottom: scaleHeight(25),
+  },
+  indicator: {
+    backgroundColor: '#AAAAAA',
+    height: scaleHeight(1),
+    width: scale(135),
+  },
+  indicatorText: {
+    color: '#999999',
+    fontSize: FONT_SIZE.NORMAL,
+    fontWeight: '400',
+    marginHorizontal: scale(10),
+  },
+  registerContainer: {
+    paddingHorizontal: scale(24),
+    paddingVertical: scaleHeight(8),
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    borderRadius: scale(12),
+    borderWidth: scale(1.5),
+    borderColor: '#00A3FF',
+  },
+  registerText: {
+    color: COLORS.black,
+    fontSize: FONT_SIZE.SMALL,
+    fontWeight: '400',
+  },
+});
 
 export default styles;

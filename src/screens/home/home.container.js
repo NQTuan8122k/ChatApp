@@ -1,4 +1,12 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {SCREEN_NAME} from '../../constants/screenName';
+import {postNewChatroomHandle} from '../../redux/chat/chat.actions';
+import {
+  getUserListSelector,
+  getUserSelector,
+} from '../../redux/user/user.selectors';
+import NavigationServices from '../../utils/navigationServices';
 import HomeView from './home.view';
 const USER = {
   id: '863330d3-1cb3-4cc3-8d0c-28e14fef31a7',
@@ -172,11 +180,45 @@ const CHAT_LiST = [
   },
 ];
 const HomeContainer = () => {
+  const dispath = useDispatch();
+  const userInfo = useSelector(getUserSelector);
+  const chatList = useSelector(getUserListSelector);
+
+  const newChatroom = (partnerId, roomId, item) => {
+    console.log('\n===================asdad@#!$qr124', userInfo?.uid);
+    console.log('===================asdad@#!$qr124', partnerId);
+
+    const roomChat = {
+      roomId,
+      chatroomData: {
+        data: null,
+        member: [userInfo?.uid, partnerId],
+        lastMessage: null,
+      },
+    };
+
+    if (!!userInfo?.uid && !!partnerId) {
+      dispath(
+        postNewChatroomHandle(
+          roomChat,
+          () =>
+            NavigationServices.navigate(SCREEN_NAME.CHAT_ROOM_SCREEN, {
+              roomId,
+              partnerId,
+              // partnerData: item,
+            }),
+          () => {},
+        ),
+      );
+    }
+  };
+
   return (
     <HomeView
-      userInfo={USER}
-      onlineUser={CHAT_LiST?.filter(item => item?.status === '0')}
+      userInfo={userInfo}
+      onlineUser={chatList?.filter(item => item?.uid != userInfo?.uid)}
       chatList={CHAT_LiST}
+      newChatroom={newChatroom}
     />
   );
 };
