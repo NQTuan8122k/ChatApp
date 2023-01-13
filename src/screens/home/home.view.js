@@ -1,24 +1,14 @@
-import {
-  Image,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import React, {useCallback, useEffect} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {COLORS} from '../../constants/colors';
-import {scale, scaleHeight} from '../../utils/fontConfig';
-import {FONT_SIZE} from '../../constants/fonts';
-import Icon from '../../components/Icon';
-import {ICONS} from '../../constants/icons';
+import React, {useCallback} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
-import moment from 'moment/moment';
-import formatTimeMessage from '../../helpers/formatTimeMessage';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import Icon from '../../components/Icon';
+import {COLORS} from '../../constants/colors';
+import {FONT_SIZE} from '../../constants/fonts';
+import {ICONS} from '../../constants/icons';
 import {IMAGES} from '../../constants/images';
-import NavigationServices from '../../utils/navigationServices';
-import {SCREEN_NAME} from '../../constants/screenName';
+import formatTimeMessage from '../../helpers/formatTimeMessage';
+import {scale, scaleHeight} from '../../utils/fontConfig';
 
 const HomeView = ({
   userInfo = null,

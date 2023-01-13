@@ -7,7 +7,10 @@ const initialState = {
 const chatReducer = (state = initialState, action) => {
   switch (action.type) {
     case CHAT_ACTION_TYPES.CREATE_NEW_CHAT_ROOM.SUCCESS: {
-      console.log('********ACTION_CREATE_NEW_CHAT**********', action);
+      console.log(
+        '********ACTION_CREATE_NEW_CHAT**********',
+        action?.payload?.length,
+      );
       return {
         ...state,
       };

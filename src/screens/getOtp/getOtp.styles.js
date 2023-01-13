@@ -7,12 +7,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    justifyContent: 'center',
   },
   titleContainer: {
     alignItems: 'center',
-    zIndex: 4,
-    top: -scaleHeight(150),
+    zIndex: 10,
     flex: 1,
+    justifyContent: 'flex-start',
   },
   title: {
     color: COLORS.GST_Blue,
@@ -97,12 +98,12 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    bottom: scaleHeight(30),
-    left: 0,
-    width: '100%',
     paddingHorizontal: '10%',
+    width: '100%',
+    paddingBottom: scaleHeight(25),
+    alignSelf: 'flex-end',
+    justifyContent: 'flex-end',
+    flex: 1,
   },
   buttonContainer: {
     width: '100%',

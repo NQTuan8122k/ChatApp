@@ -3,6 +3,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {REALTIME_DATABASE_TABLE} from '../../constants/other';
 import useIsMounted from '../../hooks/useIsMounted';
+import usePrevious from '../../hooks/usePrevious';
 import {postNewMessageHandle} from '../../redux/chat/chat.actions';
 import {getAllMessageSelector} from '../../redux/chat/chat.selectors';
 import {getUserSelector} from '../../redux/user/user.selectors';
@@ -12,12 +13,16 @@ import ChatroomView from './chatroom.view';
 const ChatroomContainer = props => {
   const userInfo = useSelector(getUserSelector);
   const [message, setMessage] = React.useState('');
+  const [chossingMessage, setChossingMessage] = React.useState(null);
+
   const [allMessage, setAllMessage] = React.useState({data: []});
 
   const roomId = useRef(props?.route?.params?.roomId);
 
   const partnerId = props?.route?.params?.partnerId;
   const partnerData = props?.route?.params?.partnerData;
+  const [isEndList, setIsEndList] = useState(false);
+  const isFetchingPrev = usePrevious(isFetching);
 
   const dispath = useDispatch();
 
@@ -29,21 +34,6 @@ const ChatroomContainer = props => {
   const listMessageRef = useRef([]);
   const isMounted = useIsMounted();
   const [isFetching, setIsFetching] = useState(true);
-
-  // let message = {
-  //   id: moment.now().toString(),
-  //   createdAt: '2022-12-27T05:38:01.854Z',
-  //   emoji: null,
-  //   reply: null,
-  //   isDeletedAll: false,
-  //   isDeletedOnly: false,
-  //   isSeen: false,
-  //   isUnread: false,
-  //   lastedAction: 1663317877903,
-  //   message: 'Oh na na, just be careful, na na',
-  //   owner: userInfo?.uid,
-  //   type: 0, // 0: message, 1: audio, 2 video, 3 image, 4 file
-  // };
 
   const sendMessage = userId => {
     console.log('=========--------------------------', userId);
@@ -63,26 +53,14 @@ const ChatroomContainer = props => {
     };
     const roomChat = {
       roomId: roomId?.current,
-      message: {
-        id: moment.now().toString(),
-        createdAt: new Date().toString(),
-        emoji: null,
-        reply: null,
-        isDeletedAll: false,
-        isDeletedOnly: false,
-        isSeen: false,
-        isUnread: false,
-        lastedAction: 1663317877903,
-        message,
-        owner: userId,
-        type: 0, // 0: message, 1: audio, 2 video, 3 image, 4 file
-      },
+      message: newMessage,
     };
 
     setListMessages(prevState => ({
       ...prevState,
       data: [newMessage, ...prevState?.data],
     }));
+
     dispath(
       postNewMessageHandle(
         roomChat,
@@ -91,8 +69,8 @@ const ChatroomContainer = props => {
       ),
     );
   };
+  // const RoomData = useSelector(getAllMessageSelector);
 
-  const RoomData = useSelector(getAllMessageSelector);
   const compareArrays = (a, b) =>
     a?.length === b?.length && !!a?.length
       ? a?.every((element, index) => element === b?.[index])
@@ -120,7 +98,7 @@ const ChatroomContainer = props => {
         }
       });
     }
-  }, [RoomData, listMessages?.data]);
+  }, [listMessages?.data]);
 
   useEffect(() => {
     if (roomId.current == undefined) {
@@ -138,25 +116,78 @@ const ChatroomContainer = props => {
     };
   }, []);
 
-  const addMessageListener = page => {
+  const addMessageListener = async page => {
     listMessageRef.current = [];
     setIsFetching(true);
-    database
+
+    await database
       .ref(REALTIME_DATABASE_TABLE.TBL_CHATROOM)
-      .child(roomId.current)
+      .child(roomId?.current)
       .child('data')
+      .limitToLast(20)
       .on('value', snapshot => {
-        if (snapshot.val()) {
-          setListMessages(() => {
-            return {
-              page: 1,
-              data: Object?.keys(snapshot.val())?.map(function (key) {
-                return snapshot?.val()[key];
-              }),
-            };
+        !!snapshot.val() &&
+          setListMessages({
+            data: Object?.keys(snapshot.val())?.map(function (key) {
+              return snapshot?.val()[key];
+            }),
           });
-        }
       });
+
+    // database
+    //   .ref(REALTIME_DATABASE_TABLE.TBL_CHATROOM)
+    //   .child(roomId.current || roomId?.current)
+    //   .child('data')
+    //   .limitToLast(20)
+    //   .on('child_added', snap => {
+    //     if (typeof snap.val() == 'object' && isFetchingPrev.current) {
+    //       if (isMounted.current) {
+    //         listMessageRef.current = [
+    //           {
+    //             ...snap.val(),
+    //           },
+    //           ...listMessageRef.current,
+    //         ];
+    //       }
+    //     } else {
+    //       if (typeof snap.val() == 'object') {
+    //         if (snap.val().uid && isMounted.current) {
+    //           setListMessages(prevState => {
+    //             console.log('=======******3333******,', prevState);
+
+    //             prevState.data.shift();
+    //             return {
+    //               ...prevState,
+    //               data: [{...snap.val()}, ...prevState.data],
+    //             };
+    //           });
+    //         }
+    //         if (isMounted.current && snap.val().uid) {
+    //           setListMessages(prevState => {
+    //             console.log('=======******2222******,', prevState);
+
+    //             return {
+    //               ...prevState,
+    //               data: [{...snap.val()}, ...prevState.data],
+    //             };
+    //           });
+    //         }
+    //       } else {
+    //         if (listMessageRef.current?.[0].uid) {
+    //         }
+    //         if (isMounted.current) {
+    //           if (!!(listMessageRef.current.length % 2)) {
+    //             setIsEndList(true);
+    //           }
+    //           setListMessages({
+    //             page: page + 1,
+    //             data: listMessageRef.current,
+    //           });
+    //           setIsFetching(false);
+    //         }
+    //       }
+    //     }
+    //   });
   };
   useEffect(() => {
     if (roomId?.current) {
@@ -165,8 +196,13 @@ const ChatroomContainer = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId?.current]);
 
-  console.log('=====0', roomId?.current);
-  console.log('=====0*********', listMessages?.data);
+  // console.log('\n=====0*********', listMessages?.data);
+  useEffect(() => {
+    console.log(
+      '\n!!!!!!!!!!!!!!!!!!*************!!!!!!!!!!!!!!!!!!!,,,,',
+      listMessages?.data?.length,
+    );
+  }, [listMessages]);
 
   return (
     <ChatroomView
@@ -179,6 +215,13 @@ const ChatroomContainer = props => {
       sendMessage={sendMessage}
       message={message}
       setMessage={setMessage}
+      paddingBottomText={
+        parseInt(message?.length / 33) + 1 > 6
+          ? 6 * 14
+          : (parseInt(message?.length / 33) + 1) * 14
+      }
+      chossingMessage={chossingMessage}
+      setChossingMessage={setChossingMessage}
     />
   );
 };

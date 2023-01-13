@@ -29,10 +29,13 @@ const ChatroomView = ({
   setMessage = () => {},
   sendMessage = () => {},
   sendNewMessage = () => {},
+  paddingBottomText = 0,
+  chossingMessage,
+  setChossingMessage = () => {},
 }) => {
   const scrollViewRef = useRef(null);
   const [focus, setFocus] = React.useState(false);
-
+  const inputRef = useRef(null);
   const changeFocus = () => {
     setFocus(prev => !prev);
     scrollViewRef.current.scrollToEnd({animated: true});
@@ -177,99 +180,138 @@ const ChatroomView = ({
     let topMess = isOnlyAbove(RoomData, index, item?.owner);
 
     return (
-      <View
-        style={[
-          {
-            marginBottom: scaleHeight(2),
-            flexDirection: 'row',
-            backgroundColor: COLORS.white,
-          },
-          partnerId == item?.owner
-            ? {alignSelf: 'flex-start', justifyContent: 'center'}
-            : {alignSelf: 'flex-end', justifyContent: 'center'},
-          isLassmessage && {marginBottom: scaleHeight(12)},
-        ]}>
-        {partnerId == item?.owner && !!isLassmessage ? (
-          <Image
-            source={{
-              uri: 'https://images.unsplash.com/photo-1624212933981-7fd3e1692147?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8c3VuJTIwc2V0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
-            }}
+      <>
+        {chossingMessage == item?.id && (
+          <Text
             style={{
-              width: scaleHeight(28),
-              height: scaleHeight(28),
-              borderRadius: scaleHeight(100),
-              marginRight: scale(12),
-            }}
-            resizeMode={'center'}
-          />
-        ) : (
-          <View
-            style={{
-              width: scaleHeight(28),
-              height: scaleHeight(28),
-              borderRadius: scaleHeight(100),
-              marginRight: scale(12),
-            }}
-          />
+              color: COLORS.gray,
+              textAlign: 'center',
+              fontSize: FONT_SIZE.SMALL,
+              paddingVertical: scaleHeight(12),
+            }}>
+            {item?.createdAt}
+          </Text>
         )}
-        <Text
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => {
+            setChossingMessage(prev => (prev != item?.id ? item?.id : null));
+          }}
           style={[
             {
-              borderTopLeftRadius: scaleHeight(18),
-              borderTopRightRadius: scaleHeight(18),
-              borderBottomLeftRadius: scaleHeight(18),
-              borderBottomRightRadius: scaleHeight(18),
-              paddingHorizontal: scale(12),
-              paddingTop: scaleHeight(7.5),
-              paddingBottom: scaleHeight(8.5),
-              maxWidth: '70%',
-              backgroundColor: '#0584FE',
-              color: COLORS.white,
-            },
-            partnerId == item?.owner && {
-              backgroundColor: 'rgba(0, 0, 0, 0.05)',
-              color: COLORS.black,
+              marginBottom: scaleHeight(2),
+              flexDirection: 'row',
+              backgroundColor: COLORS.white,
             },
             partnerId == item?.owner
-              ? border?.partner || {}
-              : border?.user || {},
-            partnerId == item?.owner
-              ? bottomMess?.partner || {}
-              : bottomMess?.user || {},
-            partnerId == item?.owner
-              ? topMess?.partner || {}
-              : topMess?.user || {},
+              ? {alignSelf: 'flex-start', justifyContent: 'center'}
+              : {alignSelf: 'flex-end', justifyContent: 'center'},
+            isLassmessage && {marginBottom: scaleHeight(12)},
           ]}>
-          {item?.message}
-          {item?.owner}
-          ****{index}
-        </Text>
-        {userId == item?.owner && !!item?.isSeen?.includes?.(partnerId) ? (
-          <Image
-            source={ICONS.CHECK}
-            style={{
-              width: scaleHeight(16),
-              height: scaleHeight(16),
-              borderRadius: scaleHeight(100),
-              marginHorizontal: scale(2),
-              tintColor: COLORS.blue,
-              alignSelf: 'flex-end',
-            }}
-            resizeMode={'contain'}
-          />
-        ) : (
+          {partnerId == item?.owner && !!isLassmessage ? (
+            <Image
+              source={{
+                uri: 'https://images.unsplash.com/photo-1624212933981-7fd3e1692147?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8c3VuJTIwc2V0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
+              }}
+              style={{
+                width: scaleHeight(28),
+                height: scaleHeight(28),
+                borderRadius: scaleHeight(100),
+                marginRight: scale(12),
+              }}
+              resizeMode={'center'}
+            />
+          ) : (
+            <View
+              style={{
+                width: scaleHeight(28),
+                height: scaleHeight(28),
+                borderRadius: scaleHeight(100),
+                marginRight: scale(12),
+              }}
+            />
+          )}
           <View
-            style={{
-              width: scaleHeight(16),
-              height: scaleHeight(16),
-              borderRadius: scaleHeight(100),
-              marginHorizontal: scale(2),
-              tintColor: COLORS.blue,
-              alignSelf: 'flex-end',
-            }}
-          />
-        )}
-      </View>
+            style={[
+              {maxWidth: '70%'},
+              partnerId == item?.owner
+                ? {alignItem: 'center', justifyContent: 'flex-end'}
+                : {alignItem: 'center', justifyContent: 'flex-start'},
+            ]}>
+            <Text
+              style={[
+                {
+                  borderTopLeftRadius: scaleHeight(18),
+                  borderTopRightRadius: scaleHeight(18),
+                  borderBottomLeftRadius: scaleHeight(18),
+                  borderBottomRightRadius: scaleHeight(18),
+                  paddingHorizontal: scale(12),
+                  paddingTop: scaleHeight(7.5),
+                  paddingBottom: scaleHeight(8.5),
+                  maxWidth: '100%',
+                  backgroundColor: '#0584FE',
+                  color: COLORS.white,
+                },
+                partnerId == item?.owner && {
+                  backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                  color: COLORS.black,
+                },
+                partnerId == item?.owner
+                  ? border?.partner || {}
+                  : border?.user || {},
+                partnerId == item?.owner
+                  ? bottomMess?.partner || {}
+                  : bottomMess?.user || {},
+                partnerId == item?.owner
+                  ? topMess?.partner || {}
+                  : topMess?.user || {},
+              ]}>
+              {item?.message}
+              {'    '}
+              {index}
+            </Text>
+            {chossingMessage == item?.id && (
+              <Text
+                style={{
+                  color: COLORS.black,
+                  textAlign: 'right',
+                  paddingRight: scale(10),
+                  fontSize: FONT_SIZE.SMALL,
+                  fontWeight: '600',
+                  paddingVertical: scaleHeight(10),
+                }}>
+                {item?.owner == userId ? 'Đã gửi' : 'Đã xem'}
+              </Text>
+            )}
+          </View>
+
+          {userId == item?.owner && !!item?.isSeen?.includes?.(partnerId) ? (
+            <Image
+              source={ICONS.CHECK}
+              style={{
+                width: scaleHeight(16),
+                height: scaleHeight(16),
+                borderRadius: scaleHeight(100),
+                marginHorizontal: scale(2),
+                tintColor: COLORS.blue,
+                alignSelf: 'flex-end',
+              }}
+              resizeMode={'contain'}
+            />
+          ) : (
+            <View
+              style={{
+                width: scaleHeight(16),
+                height: scaleHeight(16),
+                borderRadius: scaleHeight(100),
+                marginHorizontal: scale(2),
+                tintColor: COLORS.blue,
+                alignSelf: 'flex-end',
+              }}
+            />
+          )}
+        </TouchableOpacity>
+      </>
     );
   };
 
@@ -391,71 +433,77 @@ const ChatroomView = ({
             zIndex: 10,
             alignItems: 'center',
           }}>
-          <Image
-            source={{
-              uri: 'https://images.unsplash.com/photo-1624212933981-7fd3e1692147?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8c3VuJTIwc2V0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
-            }}
-            style={{
-              width: scaleHeight(100),
-              height: scaleHeight(100),
-              borderRadius: scaleHeight(100),
-            }}
-            resizeMode={'center'}
-          />
-          <Text
-            style={{
-              fontSize: FONT_SIZE.XX_LARGE,
-              color: COLORS.black,
-              fontWeight: '700',
-              marginBottom: scaleHeight(2),
-              marginTop: scaleHeight(12),
-            }}>
-            Martha Craig
-          </Text>
-          <Text
-            style={{
-              fontSize: FONT_SIZE.NORMAL,
-              color: COLORS.black,
-              fontWeight: '400',
-              marginBottom: scaleHeight(26),
-            }}>
-            You’re friends on Facebook
-          </Text>
-          <View>
-            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          {!!RoomData?.length ? (
+            <View style={{flex: 1}} />
+          ) : (
+            <>
               <Image
                 source={{
                   uri: 'https://images.unsplash.com/photo-1624212933981-7fd3e1692147?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8c3VuJTIwc2V0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
                 }}
                 style={{
-                  width: scaleHeight(48),
-                  height: scaleHeight(48),
+                  width: scaleHeight(100),
+                  height: scaleHeight(100),
                   borderRadius: scaleHeight(100),
                 }}
                 resizeMode={'center'}
               />
-              <Image
-                source={{
-                  uri: 'https://images.unsplash.com/photo-1627174003373-1892aff35f9d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8c3VuJTIwc2V0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
-                }}
+              <Text
                 style={{
-                  width: scaleHeight(48),
-                  height: scaleHeight(48),
-                  borderRadius: scaleHeight(100),
-                  left: -scale(16),
-                  zIndex: 20,
-                }}
-                resizeMode={'center'}
-              />
-            </View>
-            <Text
-              style={{
-                fontSize: FONT_SIZE.SMALL,
-                color: 'rgba(0, 0, 0, 0.3)',
-              }}>
-              Say hi to your new Facebook friend, Martha.
-            </Text>
-          </View>
+                  fontSize: FONT_SIZE.XX_LARGE,
+                  color: COLORS.black,
+                  fontWeight: '700',
+                  marginBottom: scaleHeight(2),
+                  marginTop: scaleHeight(12),
+                }}>
+                Martha Craig
+              </Text>
+              <Text
+                style={{
+                  fontSize: FONT_SIZE.NORMAL,
+                  color: COLORS.black,
+                  fontWeight: '400',
+                  marginBottom: scaleHeight(26),
+                }}>
+                You’re friends on Facebook
+              </Text>
+              <View>
+                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                  <Image
+                    source={{
+                      uri: 'https://images.unsplash.com/photo-1624212933981-7fd3e1692147?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8c3VuJTIwc2V0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
+                    }}
+                    style={{
+                      width: scaleHeight(48),
+                      height: scaleHeight(48),
+                      borderRadius: scaleHeight(100),
+                    }}
+                    resizeMode={'center'}
+                  />
+                  <Image
+                    source={{
+                      uri: 'https://images.unsplash.com/photo-1627174003373-1892aff35f9d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8c3VuJTIwc2V0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
+                    }}
+                    style={{
+                      width: scaleHeight(48),
+                      height: scaleHeight(48),
+                      borderRadius: scaleHeight(100),
+                      left: -scale(16),
+                      zIndex: 20,
+                    }}
+                    resizeMode={'center'}
+                  />
+                </View>
+                <Text
+                  style={{
+                    fontSize: FONT_SIZE.SMALL,
+                    color: 'rgba(0, 0, 0, 0.3)',
+                  }}>
+                  Say hi to your new Facebook friend, Martha.
+                </Text>
+              </View>
+            </>
+          )}
         </View>
         <FlatList
           style={
@@ -464,11 +512,15 @@ const ChatroomView = ({
             }
           }
           scrollEnabled={false}
-          contentContainerStyle={{
-            minHeight: scaleHeight(700),
-            marginLeft: scale(12),
-            paddingTop: scaleHeight(590),
-          }}
+          contentContainerStyle={[
+            {
+              minHeight: scaleHeight(700),
+              marginLeft: scale(12),
+              paddingTop: scaleHeight(590),
+              paddingBottom: scaleHeight(paddingBottomText),
+            },
+            RoomData?.length && {paddingTop: scaleHeight(90)},
+          ]}
           data={RoomData}
           renderItem={({item, index}) => rendeMessageItem(item, index)}
           keyExtractor={(item, index) => item?.id}
@@ -558,38 +610,67 @@ const ChatroomView = ({
         <View
           style={{
             flex: 1,
-            flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
+            backgroundColor: '#efeff5',
+            borderRadius: scale(25),
           }}>
-          <TextInput
-            value={message}
-            placeholder={'Aa'}
-            placeholderTextColor={COLORS.gray}
-            onChangeText={setMessage}
-            onBlur={changeFocus}
-            onFocus={changeFocus}
+          <View
             style={{
-              paddingLeft: scale(15),
-              backgroundColor: '#efeff5',
+              flexDirection: 'row',
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
               borderRadius: scale(25),
-              color: COLORS.black,
-              fontSize: FONT_SIZE.NORMAL,
-              width: '100%',
-              height: '100%',
-            }}
-          />
-          <Image
-            source={ICONS.EMOIJ}
-            style={{
-              width: scaleHeight(22),
-              height: scaleHeight(24),
-              tintColor: COLORS.blue,
-              position: 'absolute',
-              right: scale(10),
-            }}
-            resizeMode={'contain'}
-          />
+            }}>
+            <View
+              style={[
+                {
+                  width: '80%',
+                  borderRadius: scale(25),
+                  marginRight: scaleHeight(5),
+                  paddingLeft: scale(5),
+                },
+                message?.length > 150 &&
+                  focus && {
+                    maxHeight: scaleHeight(120),
+                  },
+                focus && {paddingLeft: 0},
+              ]}>
+              <TextInput
+                ref={inputRef}
+                value={message}
+                placeholder={'Aa'}
+                placeholderTextColor={COLORS.gray}
+                onChangeText={setMessage}
+                onBlur={changeFocus}
+                onFocus={changeFocus}
+                maxLength={1000}
+                multiline={focus ? true : false}
+                style={{
+                  paddingLeft: scale(0),
+                  color: COLORS.black,
+                  fontSize: FONT_SIZE.NORMAL,
+                  height: '100%',
+                  width: '100%',
+                  textAlign: 'left',
+                }}
+              />
+            </View>
+            <Image
+              source={ICONS.EMOIJ}
+              style={[
+                {
+                  width: scaleHeight(22),
+                  height: scaleHeight(24),
+                  tintColor: COLORS.blue,
+                },
+                !focus && {left: -scale(5)},
+                focus && {alignSelf: 'flex-end', top: -scaleHeight(10)},
+              ]}
+              resizeMode={'contain'}
+            />
+          </View>
         </View>
         <TouchableOpacity onPress={() => sendMessage(userId)}>
           <Image

@@ -39,8 +39,8 @@ const LoginView = ({
         innerRef={formikRef}
         enableReinitialize={true}
         initialValues={{
-          phoneNumber: '',
-          password: '',
+          phoneNumber: '0395965412',
+          password: 'Qwe123456!',
         }}
         validationSchema={loginSchema}
         onSubmit={onLogin}

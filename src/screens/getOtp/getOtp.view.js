@@ -1,6 +1,7 @@
 import {Formik} from 'formik';
 import React from 'react';
 import {
+  Image,
   ImageBackground,
   Text,
   TextInput,
@@ -8,8 +9,12 @@ import {
   View,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {COLORS} from '../../constants/colors';
+import {FONT_SIZE} from '../../constants/fonts';
+import {ICONS} from '../../constants/icons';
 import {IMAGES} from '../../constants/images';
 import {SCREEN_NAME} from '../../constants/screenName';
+import {scale, scaleHeight} from '../../utils/fontConfig';
 import NavigationServices from '../../utils/navigationServices';
 import {phoneYupSchema} from '../../utils/YupSchema';
 import styles from './getOtp.styles';
@@ -26,11 +31,43 @@ const GetOtpView = ({
 }) => {
   return (
     <SafeAreaView style={styles.container}>
-      <ImageBackground
+      {/* <ImageBackground
         source={IMAGES.SIGNUP_BACKGROUND}
         style={styles.imageBackground}
         resizeMode={'contain'}>
-        {/* <View
+        <View
+          style={{
+            left: scale(75),
+            top: scaleHeight(150),
+            paddingLeft: scale(25),
+            paddingTop: scaleHeight(20),
+          }}>
+          <Image
+            source={ICONS.MESS_LOGO}
+            style={{
+              width: scaleHeight(50),
+              height: scaleHeight(50),
+              tintColor: COLORS.white,
+            }}
+            resizeMode={'contain'}
+          />
+          <Text
+            style={{
+              color: COLORS.white,
+              fontSize: FONT_SIZE.X_LARGE,
+              fontWeight: '700',
+              paddingLeft: scale(5),
+            }}>
+            {'\n'}Welcome new member
+          </Text>
+        </View>
+      </ImageBackground> */}
+      <View style={{width: '100%', height: '40%'}}>
+        <ImageBackground
+          source={IMAGES.SIGNUP_BACKGROUND}
+          style={styles.imageBackground}
+          resizeMode={'contain'}>
+          {/* <View
           style={{
             left: scale(75),
             top: scaleHeight(150),
@@ -56,7 +93,8 @@ const GetOtpView = ({
             {'\n'}Welcome new member
           </Text>
         </View> */}
-      </ImageBackground>
+        </ImageBackground>
+      </View>
       <View style={styles.titleContainer}>
         <Text style={styles.title}> </Text>
 
@@ -116,7 +154,7 @@ const GetOtpView = ({
           }}
         </Formik>
       </View>
-      <View style={styles.bottomContainer}>
+      <View style={[styles.bottomContainer, focus && {top: scaleHeight(150)}]}>
         <TouchableOpacity
           onPress={onPressContinue}
           disabled={

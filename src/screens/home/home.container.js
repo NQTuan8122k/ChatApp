@@ -185,9 +185,6 @@ const HomeContainer = () => {
   const chatList = useSelector(getUserListSelector);
 
   const newChatroom = (partnerId, roomId, item) => {
-    console.log('\n===================asdad@#!$qr124', userInfo?.uid);
-    console.log('===================asdad@#!$qr124', partnerId);
-
     const roomChat = {
       roomId,
       chatroomData: {

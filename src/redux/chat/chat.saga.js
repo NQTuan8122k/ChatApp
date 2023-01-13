@@ -28,7 +28,10 @@ function* postNewChatroomAction(action) {
           });
       });
 
-    console.log('******************************************11111111', data);
+    console.log(
+      '******************************************11111111',
+      data?.length,
+    );
     if (!data) {
       yield database
         .ref(REALTIME_DATABASE_TABLE.TBL_CHATROOM)
@@ -44,7 +47,7 @@ function* postNewChatroomAction(action) {
         '==========================__GET_CHAT_ROOM_DATA__SUCCESS=========================',
       );
       // yield put(getChatroomDataSuccess(data));
-      yield put(postNewChatroomSuccess(data));
+      yield put(postNewChatroomSuccess());
       onSuccess?.();
     }
   } catch (err) {
